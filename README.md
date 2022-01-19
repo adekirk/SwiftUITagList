@@ -1,3 +1,5 @@
 # SwiftUITagList
 
-A description of this package.
+A selectable tag list. Vertically expanding as required.
+
+<img src="./example.png">
