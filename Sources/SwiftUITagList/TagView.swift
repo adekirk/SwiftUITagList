@@ -14,6 +14,10 @@ public struct TagView: View {
     private let selectedImage = "checkmark.circle"
     private let clearImage = "circle"
 
+    public init(tag: Binding<Tag>) {
+        self._tag = tag
+    }
+
     public var body: some View {
         HStack {
             Image(systemName: tag.isSelected ? selectedImage : clearImage)
