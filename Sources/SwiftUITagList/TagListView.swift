@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct TagListView<Content: View>: View {
+
+
     @State private var widths: [TagView.Tag: CGFloat] = [:]
     @State private var availableWidth: CGFloat = 0
 
@@ -15,6 +17,12 @@ public struct TagListView<Content: View>: View {
 
     let spacing: CGFloat
     let content: (Binding<TagView.Tag>) -> Content
+
+    public init(tags: Binding<[TagView.Tag]>, spacing: CGFloat, content: @escaping (Binding<TagView.Tag>) -> Content) {
+        self._tags = tags
+        self.spacing = spacing
+        self.content = content
+    }
 
     public var body: some View {
         ZStack(alignment: .leading) {
