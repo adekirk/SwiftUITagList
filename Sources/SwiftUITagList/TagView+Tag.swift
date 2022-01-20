@@ -14,5 +14,12 @@ extension TagView {
         public var name: String
         public var color: Color
         public var isSelected: Bool
+
+        public init(id: String, name: String, color: Color, isSelected: Bool) {
+            self.id = id
+            self.name = name
+            self.color = color
+            self.isSelected = isSelected
+        }
     }
 }
