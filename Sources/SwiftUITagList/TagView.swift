@@ -8,14 +8,14 @@
 import SwiftUI
 
 public struct TagView: View {
-    @Binding var tag: Tag
+    @ObservedObject var tag: Tag
     @State var hiddenTrigger: Bool = false
 
     private let selectedImage = "checkmark.circle"
     private let clearImage = "circle"
 
-    public init(tag: Binding<Tag>) {
-        self._tag = tag
+    public init(tag: Tag) {
+        self.tag = tag
     }
 
     public var body: some View {
@@ -44,13 +44,13 @@ struct TagView_Previews: PreviewProvider {
     }
 
     struct PreviewWrapper: View {
-        @State var selected = TagView.Tag(id: "1", name: "Selected Tag", color: .blue, isSelected: true)
-        @State var clear = TagView.Tag(id: "2", name: "Clear Tag", color: .orange, isSelected: false)
+        @StateObject var clear = TagView.Tag(id: "1", name: "Clear", color: .red, isSelected: false)
+        @StateObject var selected = TagView.Tag(id: "2", name: "Selected", color: .blue, isSelected: true)
 
         var body: some View {
             VStack(alignment: .leading, spacing: 20) {
-                TagView(tag: $clear)
-                TagView(tag: $selected)
+                TagView(tag: clear)
+                TagView(tag: selected)
             }
             .padding()
             .previewLayout(.sizeThatFits)

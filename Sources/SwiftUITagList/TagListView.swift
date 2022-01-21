@@ -8,18 +8,16 @@
 import SwiftUI
 
 public struct TagListView<Content: View>: View {
-
-
     @State private var widths: [TagView.Tag: CGFloat] = [:]
     @State private var availableWidth: CGFloat = 0
 
-    @Binding var tags: [TagView.Tag]
+    var tags: [TagView.Tag]
 
     let spacing: CGFloat
-    let content: (Binding<TagView.Tag>) -> Content
+    let content: (TagView.Tag) -> Content
 
-    public init(tags: Binding<[TagView.Tag]>, spacing: CGFloat, content: @escaping (Binding<TagView.Tag>) -> Content) {
-        self._tags = tags
+    public init(tags: [TagView.Tag], spacing: CGFloat, content: @escaping (TagView.Tag) -> Content) {
+        self.tags = tags
         self.spacing = spacing
         self.content = content
     }
@@ -36,7 +34,7 @@ public struct TagListView<Content: View>: View {
                 ForEach(computeRows(width: availableWidth), id: \.self) { row in
                     HStack(spacing: spacing) {
                         ForEach(row, id: \.self) { tag in
-                            content($tags.first(where: { $0.id == tag.id })!)
+                            content(tags.first(where: { $0.id == tag.id })!)
                                 .fixedSize()
                                 .readSize { size in
                                     widths[tag] = size.width
@@ -76,26 +74,36 @@ public struct TagListView<Content: View>: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        PreviewWrapper()
+        OuterWrapper()
     }
 
-    struct PreviewWrapper: View {
-        @State var tags: [TagView.Tag] = [
-            .init(id: "1", name: "HR", color: .yellow, isSelected: false),
-            .init(id: "2", name: "Marketing", color: .orange, isSelected: false),
-            .init(id: "1", name: "HR", color: .yellow, isSelected: false),
-            .init(id: "1", name: "HR", color: .yellow, isSelected: false),
-            .init(id: "3", name: "Management", color: .red, isSelected: false),
-            .init(id: "4", name: "Sales", color: .green, isSelected: false),
-            .init(id: "5", name: "Training", color: .blue, isSelected: false),
-        ]
+    struct OuterWrapper: View {
+        @StateObject var viewModel = ViewModel()
+
+        var body: some View {
+            VStack {
+                Text("Outer")
+                InnerWrapper(viewModel: viewModel)
+            }
+        }
+
+        class ViewModel: ObservableObject {
+            @Published var tags: [TagView.Tag] = [
+                TagView.Tag(id: "1", name: "Marketing", color: .red, isSelected: false),
+                TagView.Tag(id: "2", name: "HR", color: .yellow, isSelected: true)
+            ]
+        }
+    }
+
+    struct InnerWrapper: View {
+        @ObservedObject var viewModel: OuterWrapper.ViewModel
+
         let spacing: CGFloat = 16
 
         var body: some View {
             VStack {
-                Text("Tags")
                 Divider()
-                TagListView(tags: $tags, spacing: spacing) { item in
+                TagListView(tags: viewModel.tags, spacing: spacing) { item in
                     TagView(tag: item)
                 }
                 Divider()
@@ -105,3 +113,4 @@ struct SwiftUIView_Previews: PreviewProvider {
         }
     }
 }
+
